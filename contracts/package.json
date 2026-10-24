@@ -7,7 +7,8 @@
     "build": "node scripts/build.mjs",
     "test": "node scripts/test.mjs",
     "keys": "node scripts/keys.mjs",
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "node scripts/deploy.mjs",
+    "test:isolated": "npm --prefix test test"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.1.3",
