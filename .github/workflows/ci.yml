@@ -9,17 +9,41 @@ permissions:
 
 # Linux, as most people who build this will be on.
 jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Check the verifier with declared archive fixtures
+        env:
+          ZNS_VENDOR_TEST_TMPDIR: ${{ runner.temp }}
+        run: node --test contracts/scripts/verify-vendor.test.mjs
+      - name: Fetch the reviewed ENS publication with a transport cap
+        run: |
+          archive="$RUNNER_TEMP/ens-contracts-1.7.0.tgz"
+          test ! -e "$archive"
+          curl --fail --silent --show-error --retry 0 --max-time 90 --max-filesize 33554432 --output "$archive" https://registry.npmjs.org/@ensdomains/ens-contracts/-/ens-contracts-1.7.0.tgz
+      - name: Compare the actual publication without extracting it
+        run: node contracts/scripts/verify-vendor.mjs --archive "$RUNNER_TEMP/ens-contracts-1.7.0.tgz"
+
   web:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: true
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
