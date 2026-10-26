@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/vendor.mjs",
+    "vendor:check": "node scripts/verify-vendor.mjs",
+    "test:vendor": "node --test scripts/verify-vendor.test.mjs",
     "build": "node scripts/build.mjs",
     "test": "node scripts/test.mjs",
     "keys": "node scripts/keys.mjs",
